@@ -1,6 +1,7 @@
 module Lib where
 
 import Text.Printf
+import Debug.Trace
 
 data Day = Day {
     _daynum :: Int,
@@ -26,3 +27,5 @@ testInput :: Int -> Int -> IO [String]
 testInput day part = do
     myInput <- readFile (testInputFile day part)
     return $ lines myInput
+
+debugval val = trace (show val) val

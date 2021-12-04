@@ -4,6 +4,7 @@ import Lib
 import qualified Day01
 import qualified Day02
 import qualified Day03
+import qualified Day04
 
 import Text.Printf
 
@@ -27,5 +28,4 @@ main = do
     runDay Day01.soln
     runDay Day02.soln
     runDay Day03.soln
-    --runDay 2 Lib.day02_01 Lib.day02_02
-    --runDay 3 Lib.day03_01 Lib.day03_02
+    runDay Day04.soln
