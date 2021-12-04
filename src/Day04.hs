@@ -8,6 +8,7 @@ import Data.Vector (Vector, (!))
 import qualified Data.Vector as V
 import Data.Set (Set)
 import qualified Data.Set as Set
+import Data.List
 
 import Lib
 
@@ -23,39 +24,27 @@ instance Eq BingoCard where
     (==) a b = (_cardId a) == (_cardId b)
     (/=) a b = (_cardId a) /= (_cardId b)
 
-index :: Matrix a -> Int -> Int -> a
-index mat r c = let
-    row = mat ! r
-    in row ! c
-
-matseq :: Matrix a -> [a]
-matseq mat = concat (V.toList <$> mat)
-
 initData :: [String] -> ([Int], [BingoCard])
 initData (s1:ss) = let
     numbers = read $ printf "[%s]" s1
-    bingos = initBingos 0 ss
+    bingos = initBingos ss
     in (numbers, bingos)
 
-initBingos :: Int -> [String] -> [BingoCard]
-initBingos _ [] = []
-initBingos i ss = let
-    sss = tail ss -- drop whitespace
-    (cardlines, restlines) = splitAt 5 sss
-    restcards = initBingos (i+1) restlines
-    card = initBingo i cardlines
-    in card : restcards
+initBingos :: [String] -> [BingoCard]
+initBingos ss = (\(i,sss) -> initBingo i (tail sss)) <$> [1..] `zip` (6 `chunks` ss) 
 
 initBingo :: Int -> [String] -> BingoCard
-initBingo i ss = let 
-    squares = V.fromList [ initBingoLine s | s <- take 5 ss ]
+initBingo i ss = let
+    initLine s = V.fromList [ read z :: Int | z <- words s ]
+    squares = V.fromList [ initLine s | s <- take 5 ss ]
     in BingoCard i squares
 
-initBingoLine :: String -> V.Vector Int
-initBingoLine s = V.fromList [ read z :: Int | z <- words s ]
-
 bingoScore :: Nums -> BingoCard -> Int
-bingoScore nums card = sum $ filter (\n -> not $ n `Set.member` nums) $ matseq (_squares card)
+bingoScore nums card = let
+    vsum = V.foldr (+) 0
+    vsumIf f v = vsum $ V.filter f v
+    notMarked n = not $ n `Set.member` nums
+    in vsum $ (vsumIf notMarked) <$> _squares card
 
 hasBingoRow :: Nums -> BingoCard -> Int -> Bool
 hasBingoRow nums card row = V.all (\i -> Set.member i nums) $ (_squares card) ! row
@@ -66,34 +55,30 @@ hasBingoCol nums card col = V.all (\row -> Set.member (row ! col) nums) $ _squar
 hasBingo :: Nums -> BingoCard -> Bool
 hasBingo nums card = any id [ (hasBingoRow nums card i) || (hasBingoCol nums card i) | i <- [0..4] ]
 
-findWinner :: Nums -> Vector BingoCard -> [Int]-> (Nums, BingoCard, Int)
-findWinner nums cards (i:is) = let
-    nnums = Set.insert i nums
-    in case (V.find (hasBingo nnums) cards) of
-        Just card -> (nnums, card, i)
-        Nothing   -> findWinner nnums cards is
 
-findWinners :: Nums -> Vector BingoCard -> [Int] -> [(Nums, BingoCard, Int)]
-findWinners _ _ [] = []
-findWinners nums cards (i:is) = let
-    nnums = Set.insert i nums
-    
-    winners = V.toList $ V.map (\c -> (nnums, c, i)) $ V.filter (hasBingo nnums) cards
-    iswinner card = any (\(_, c, _) -> card == c) winners
+findWinners :: [Int] -> Vector BingoCard -> [(Nums, BingoCard, Int)]
+findWinners numbers cards = let
+    first = (Set.empty, cards, numbers)
 
-    ncards = V.filter (not .iswinner) cards
-    rest = findWinners nnums ncards is
-    in winners ++ rest
+    next (called, cards, []) = Nothing
+    next (called, cards, (n:nums)) = let
+        ncalled = Set.insert n called
+        winners = V.toList $ V.map (\c -> (ncalled, c, n)) $ V.filter (hasBingo ncalled) cards
+        iswinner card = any (\(_, c, _) -> card == c) winners
+        ncards = V.filter (not . iswinner) cards
+        in Just (winners, (ncalled, ncards, nums))
+
+    in concat $ unfoldr next first
 
 part1pure :: [Int] -> [BingoCard] -> (BingoCard, Int, Int)
 part1pure gen cards = let
-    (drawn, winner, winningNum) = findWinner Set.empty (V.fromList cards) gen
+    (drawn, winner, winningNum) = head $ findWinners gen (V.fromList cards)
     score = bingoScore drawn winner
     in (winner, score, winningNum)
 
 part2pure :: [Int] -> [BingoCard] -> (BingoCard, Int, Int)
 part2pure gen cards = let
-    (drawn, winner, winningNum) = last $ findWinners Set.empty (V.fromList cards) gen
+    (drawn, winner, winningNum) = last $ findWinners gen (V.fromList cards)
     score = bingoScore drawn winner
     in (winner, score, winningNum)
 
@@ -112,4 +97,4 @@ part2 = do
     return $ winningNum * score
 
 soln :: Lib.Day
-soln = Lib.Day {_daynum = 4, _part1 = part1, _part2 = part2}
+soln = Lib.Day 4 part1 part2

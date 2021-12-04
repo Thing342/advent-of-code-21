@@ -28,4 +28,11 @@ testInput day part = do
     myInput <- readFile (testInputFile day part)
     return $ lines myInput
 
+chunks :: Int -> [a] -> [[a]]
+chunks n = windows n n
+
+windows :: Int -> Int -> [a] -> [[a]]
+windows _ _ [] = []
+windows step n items = (take n items) : (windows step n (drop step items))
+
 debugval val = trace (show val) val
