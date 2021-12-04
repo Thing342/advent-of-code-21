@@ -16,4 +16,4 @@ main :: IO ()
 main = do
 	runDay 1 Lib.day01_01 Lib.day01_02
 	runDay 2 Lib.day02_01 Lib.day02_02
-
+	runDay 3 Lib.day03_01 Lib.day03_02
