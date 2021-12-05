@@ -31,7 +31,7 @@ initData (s1:ss) = let
     in (numbers, bingos)
 
 initBingos :: [String] -> [BingoCard]
-initBingos ss = (\(i,sss) -> initBingo i (tail sss)) <$> [1..] `zip` (6 `chunks` ss) 
+initBingos ss = (\(i,sss) -> initBingo i (tail sss)) <$> [1..] `zip` (6 `chunks` ss)
 
 initBingo :: Int -> [String] -> BingoCard
 initBingo i ss = let
