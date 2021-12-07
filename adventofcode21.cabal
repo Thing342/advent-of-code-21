@@ -6,12 +6,12 @@ cabal-version: 1.12
 
 name:           adventofcode21
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/adventofcode21#readme>
+description:    Advent of Code 2021 solutions
 homepage:       https://github.com/githubuser/adventofcode21#readme
 bug-reports:    https://github.com/githubuser/adventofcode21/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2021 Author name here
+author:         wjordan
+maintainer:     wes@wesj.org
+copyright:      2021 wjordan
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -30,6 +30,7 @@ library
       Day03
       Day04
       Day05
+      Day06
       Lib
   other-modules:
       Paths_adventofcode21

@@ -42,4 +42,13 @@ insertWithMany :: Ord k => (a -> a -> a) -> [(k, a)] -> Map k a -> Map k a
 insertWithMany _ [] mymap = mymap
 insertWithMany f ((key, val):ns) mymap = Map.insertWith f key val (insertWithMany f ns mymap)
 
+splitBy :: (Eq a) => a -> [a] -> [[a]]
+splitBy delim [] = [[]]
+splitBy delim l@(x:xs) = let
+    (r:rs) = splitBy delim xs
+    in if x == delim then []:r:rs else (x:r):rs
+
+divmod :: (Integral a) => a -> a -> (a, a)
+divmod a b = (a `div` b, a `mod` b)
+
 debugval val = trace (show val) val

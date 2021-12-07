@@ -6,6 +6,7 @@ import qualified Day02
 import qualified Day03
 import qualified Day04
 import qualified Day05
+import qualified Day06
 
 import Text.Printf
 
@@ -24,3 +25,4 @@ main = do
     runDay Day03.soln
     runDay Day04.soln
     runDay Day05.soln
+    runDay Day06.soln
