@@ -10,10 +10,6 @@ import qualified Data.Map as Map
 
 import Lib
 
-insertWithMany :: Ord k => (a -> a -> a) -> [(k, a)] -> Map k a -> Map k a
-insertWithMany _ [] mymap = mymap
-insertWithMany f ((key, val):ns) mymap = Map.insertWith f key val (insertWithMany f ns mymap)
-
 easyrange :: Int -> Int -> [Int]
 easyrange a b = if a > b then [a,a-1..b] else [a..b]
 
@@ -31,18 +27,6 @@ initLine :: String -> Line
 initLine line = let
     (p1:_:p2:_) = words line
     in Line (initPoint p1) (initPoint p2)
-
-xfrom :: Line -> Int
-xfrom (Line (Point x1 _) _) = x1
-
-xto :: Line -> Int
-xto (Line _ (Point x2 _)) = x2
-
-yfrom :: Line -> Int
-yfrom (Line (Point _ y1) _) = y1
-
-yto :: Line -> Int
-yto (Line _ (Point _ y2)) = y2
 
 lineType :: Line -> LineType
 lineType (Line (Point x1 y1) (Point x2 y2)) = if (x1 == x2) 
@@ -82,17 +66,12 @@ initProblem part2 ls = let
 solve :: ProblemState -> Int
 solve st = length $ (filter (>= 2)) $ Map.elems $ _overlaps st
 
-part1 :: IO Int
-part1 = do
-    d <- readInput 5 1
-    let st = initProblem False d
-    return $ solve st
-
-part2 :: IO Int
-part2 = do
-    d <- readInput 5 1
-    let st = initProblem True d
+solveIO :: Bool -> Bool -> IO Int
+solveIO p2 test = do
+    let readin = if test then testInput else readInput
+    d <- readin 5 1
+    let st = initProblem p2 d
     return $ solve st
 
 soln :: Lib.Day
-soln = Lib.Day 5 part1 part2
+soln = Lib.Day 5 (solveIO False False) (solveIO True False)

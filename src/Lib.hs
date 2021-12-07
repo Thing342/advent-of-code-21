@@ -3,6 +3,9 @@ module Lib where
 import Text.Printf
 import Debug.Trace
 
+import Data.Map (Map, (!))
+import qualified Data.Map as Map
+
 data Day = Day {
     _daynum :: Int,
     _part1  :: IO Int,
@@ -34,5 +37,9 @@ chunks n = windows n n
 windows :: Int -> Int -> [a] -> [[a]]
 windows _ _ [] = []
 windows step n items = (take n items) : (windows step n (drop step items))
+
+insertWithMany :: Ord k => (a -> a -> a) -> [(k, a)] -> Map k a -> Map k a
+insertWithMany _ [] mymap = mymap
+insertWithMany f ((key, val):ns) mymap = Map.insertWith f key val (insertWithMany f ns mymap)
 
 debugval val = trace (show val) val
