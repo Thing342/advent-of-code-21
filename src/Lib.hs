@@ -51,4 +51,10 @@ splitBy delim l@(x:xs) = let
 divmod :: (Integral a) => a -> a -> (a, a)
 divmod a b = (a `div` b, a `mod` b)
 
+minimize :: (Ord a, Bounded a) => [a] -> a
+minimize = foldr min maxBound
+
+maximize :: (Ord a, Bounded a) => [a] -> a
+maximize = foldr max minBound
+
 debugval val = trace (show val) val

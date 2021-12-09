@@ -24,6 +24,7 @@ dependencies:
 - vector
 - containers
 - mtl
+- sort
 
 library:
   source-dirs: src

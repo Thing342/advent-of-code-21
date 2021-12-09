@@ -1,4 +1,4 @@
-module Day05 where
+module Day05 (soln) where
 
 import Text.Printf
 import Debug.Trace

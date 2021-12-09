@@ -1,4 +1,4 @@
-module Day07 where
+module Day07 (soln) where
 
 import Lib
 
@@ -8,13 +8,13 @@ distCost True from to = let
     n = abs (from - to)
     in n * (n + 1) `div` 2 
 
-sumDist :: Bool -> Int -> [Int] -> Int
-sumDist p2 v = foldr (\x s -> s + (distCost p2 x v)) 0
+sumDist :: Bool -> [Int] -> Int -> Int
+sumDist p2 d v = sum [distCost p2 v x | x <- d]
 
 solve :: Bool -> String -> Int
 solve p2 line = let
     d = read <$> splitBy ',' line
-    in foldr min maxBound [ sumDist p2 x d | x <- [1..length d] ]
+    in minimize [sumDist p2 d i | i <- [1..length d]]
 
 solveIO :: Bool -> IO Int
 solveIO p2 = do
