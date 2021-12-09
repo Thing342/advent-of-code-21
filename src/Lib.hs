@@ -23,12 +23,12 @@ testInputFile day part = printf "%s/test%02d.%d" puzzleInputDir day part
 
 readInput :: Int -> Int -> IO [String]
 readInput day part = do
-    myInput <- readFile (puzzleInputFile day part)
+    myInput <- readFile $ puzzleInputFile day part
     return $ lines myInput
 
 testInput :: Int -> Int -> IO [String]
 testInput day part = do
-    myInput <- readFile (testInputFile day part)
+    myInput <- readFile $ testInputFile day part
     return $ lines myInput
 
 chunks :: Int -> [a] -> [[a]]
@@ -56,5 +56,10 @@ minimize = foldr min maxBound
 
 maximize :: (Ord a, Bounded a) => [a] -> a
 maximize = foldr max minBound
+
+count :: (Traversable t, Ord k, Num v) => t k -> Map k v
+count = let
+    accum c m = Map.insertWith (+) c 1 m
+    in foldr accum Map.empty
 
 debugval val = trace (show val) val
