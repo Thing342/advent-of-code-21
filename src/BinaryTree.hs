@@ -21,8 +21,8 @@ insert x (Stem left y right)
 fromList :: (Ord a) => [a] -> BinaryTree a
 fromList = foldr insert Leaf
 
-median :: (Ord a) => BinaryTree a -> Either (a,a) a
-median tree = let
+treeMedian :: (Ord a) => BinaryTree a -> Either (a,a) a
+treeMedian tree = let
     b = (ascending tree) `zip` (descending tree)
     (lo,hi) = head $ dropWhile (\(lo,hi) -> lo < hi) b
     in if lo == hi then Right lo else Left (lo, hi)

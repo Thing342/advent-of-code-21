@@ -6,6 +6,8 @@ import Debug.Trace
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
 
+import qualified BinaryTree
+
 data Day = Day {
     _daynum :: Int,
     _part1  :: IO Int,
@@ -51,6 +53,9 @@ splitBy delim l@(x:xs) = let
 divmod :: (Integral a) => a -> a -> (a, a)
 divmod a b = (a `div` b, a `mod` b)
 
+easyrange :: Int -> Int -> [Int]
+easyrange a b = if a > b then [a,a-1..b] else [a..b]
+
 minimize :: (Ord a, Bounded a) => [a] -> a
 minimize = foldr min maxBound
 
@@ -61,5 +66,8 @@ count :: (Traversable t, Ord k, Num v) => t k -> Map k v
 count = let
     accum c m = Map.insertWith (+) c 1 m
     in foldr accum Map.empty
+
+median :: (Ord a) => [a] -> Either (a,a) a
+median = BinaryTree.treeMedian . BinaryTree.fromList
 
 debugval val = trace (show val) val

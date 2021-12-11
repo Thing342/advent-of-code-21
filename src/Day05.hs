@@ -10,9 +10,6 @@ import qualified Data.Map as Map
 
 import Lib
 
-easyrange :: Int -> Int -> [Int]
-easyrange a b = if a > b then [a,a-1..b] else [a..b]
-
 data Point = Point Int Int deriving (Show, Eq, Ord)
 
 initPoint :: String -> Point

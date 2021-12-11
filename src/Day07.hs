@@ -19,7 +19,7 @@ solve p2 line = let
 solveIO :: Bool -> IO Int
 solveIO p2 = do
     inpt <- readInput 7 1
-    (return . (solve p2) . head) inpt
+    return . solve p2 $ head inpt
 
 soln :: Lib.Day
 soln = Lib.Day 7 (solveIO False) (solveIO True)
