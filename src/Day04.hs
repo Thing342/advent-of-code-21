@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 module Day04 (soln) where
 
 import Text.Printf
@@ -6,11 +7,12 @@ import Data.Bits
 
 import Data.Vector (Vector, (!))
 import qualified Data.Vector as V
-import Data.Set (Set)
+import Data.Set (Set, member)
 import qualified Data.Set as Set
 import Data.List
 
 import Lib
+import Control.Monad (filterM)
 
 type Matrix a = Vector (Vector a)
 type Nums = Set Int
@@ -29,6 +31,7 @@ initData (s1:ss) = let
     numbers = read $ printf "[%s]" s1
     bingos = initBingos ss
     in (numbers, bingos)
+initData ss = eprintf "initData %s" (show ss)
 
 initBingos :: [String] -> [BingoCard]
 initBingos ss = (\(i,sss) -> initBingo i (tail sss)) <$> [1..] `zip` (6 `chunks` ss)
@@ -43,17 +46,17 @@ bingoScore :: Nums -> BingoCard -> Int
 bingoScore nums card = let
     vsum = V.foldr (+) 0
     vsumIf f v = vsum $ V.filter f v
-    notMarked n = not $ n `Set.member` nums
-    in vsum $ (vsumIf notMarked) <$> _squares card
+    notMarked n = not $ n `member` nums
+    in vsum $ vsumIf notMarked <$> _squares card
 
 hasBingoRow :: Nums -> BingoCard -> Int -> Bool
-hasBingoRow nums card row = V.all (\i -> Set.member i nums) $ (_squares card) ! row
+hasBingoRow nums card row = V.all (`member` nums) $ _squares card ! row
 
 hasBingoCol :: Nums -> BingoCard -> Int -> Bool
-hasBingoCol nums card col = V.all (\row -> Set.member (row ! col) nums) $ _squares card
+hasBingoCol nums card col = V.all (\row -> (row ! col) `member` nums) $ _squares card
 
 hasBingo :: Nums -> BingoCard -> Bool
-hasBingo nums card = any id [ (hasBingoRow nums card i) || (hasBingoCol nums card i) | i <- [0..4] ]
+hasBingo nums card = or [ hasBingoRow nums card i || hasBingoCol nums card i | i <- [0..4] ]
 
 
 findWinners :: [Int] -> Vector BingoCard -> [(Nums, BingoCard, Int)]
@@ -61,9 +64,9 @@ findWinners numbers cards = let
     first = (Set.empty, cards, numbers)
 
     next (called, cards, []) = Nothing
-    next (called, cards, (n:nums)) = let
+    next (called, cards, n:nums) = let
         ncalled = Set.insert n called
-        winners = V.toList $ V.map (\c -> (ncalled, c, n)) $ V.filter (hasBingo ncalled) cards
+        winners = V.toList . V.map (ncalled,, n) . V.filter (hasBingo ncalled) $ cards
         iswinner card = any (\(_, c, _) -> card == c) winners
         ncards = V.filter (not . iswinner) cards
         in Just (winners, (ncalled, ncards, nums))

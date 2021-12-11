@@ -70,4 +70,6 @@ count = let
 median :: (Ord a) => [a] -> Either (a,a) a
 median = BinaryTree.treeMedian . BinaryTree.fromList
 
+eprintf = error . printf
+
 debugval val = trace (show val) val

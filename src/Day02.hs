@@ -24,6 +24,7 @@ readCmd False (x,y,aim) ("down", v) = (x, y + v, aim)
 readCmd True (x,y,aim) ("forward", v) = (x + v, y + (v * aim), aim)
 readCmd True (x,y,aim) ("up", v) = (x, y, aim - v)
 readCmd True (x,y,aim)("down", v) = (x, y, aim + v)
+readCmd p2 st cmd = eprintf "readCmd %s %s %s" (show p2) st cmd
 
 day02_01_pure :: State -> [Cmd] -> State
 day02_01_pure = foldl (readCmd False)

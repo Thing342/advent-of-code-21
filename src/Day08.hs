@@ -8,17 +8,19 @@ import Data.List
 import qualified Data.Sort (sort)
 
 import Lib
+import Text.Printf (printf)
 
 findMapping :: [String] -> Map Char Char
 findMapping sigvalues = let
     apps = count $ concat sigvalues
-    (four:_) = filter (\w -> (length w) == 4) sigvalues
+    (four:_) = filter (\w -> length w == 4) sigvalues
 
     decodeV c 9 = 'f'
     decodeV c 4 = 'e'
     decodeV c 6 = 'b'
     decodeV c 7 = if c `elem` four then 'd' else 'g'
     decodeV c 8 = if c `elem` four then 'c' else 'a'
+    decodeV c n = eprintf "decodeV %c %d" c n
 
     in Map.mapWithKey decodeV apps
 
@@ -36,15 +38,16 @@ decodeDigit m scrambled = let
         "acf" -> 7
         "abcdefg" -> 8
         "abcdfg" -> 9
+        dc -> eprintf "decoded %s" dc
 
 decodeOutputDigits :: String -> [Int]
 decodeOutputDigits line = let
-    (signal, _:output) = span (\s -> s /= "|") $ words line
+    (signal, _:output) = span (/= "|") $ words line
     mapping = findMapping signal
-    in (decodeDigit mapping) <$> output
+    in decodeDigit mapping <$> output
 
 readDigits :: [Int] -> Int
-readDigits xs = snd $ foldr (\a (m, b) -> (m * 10, (a * m) + b)) (1,0) xs
+readDigits xs = snd $ foldr (\a (m, b) -> (m * 10, a * m + b)) (1,0) xs
 
 decodeOutputNumbers :: String -> Int
 decodeOutputNumbers = readDigits . decodeOutputDigits

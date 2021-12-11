@@ -7,21 +7,21 @@ import Lib
 
 skip2 :: [a] -> [(a,a)]
 skip2 [] = []
-skip2 (x:[]) = []
-skip2 (x:y:[]) = [(x,y)]
-skip2 (x:y:zs) = (x,y) : (skip2 (y:zs))
+skip2 [x] = []
+skip2 [x,y] = [(x,y)]
+skip2 (x:y:zs) = (x,y) : skip2 (y:zs)
 
 skip3 :: [a] -> [(a,a,a)]
 skip3 [] = []
-skip3 (x:[]) = []
-skip3 (x:y:[]) = []
-skip3 (x:y:z:[]) = [(x,y,z)]
-skip3 (x:y:z:aas) = (x,y,z) : (skip3 (y:z:aas))
+skip3 [x] = []
+skip3 [x,y] = []
+skip3 [x,y,z] = [(x,y,z)]
+skip3 (x:y:z:aas) = (x,y,z) : skip3 (y:z:aas)
 
 day01_1_pure :: [Int] -> Int
 day01_1_pure ds = let
     dds = skip2 ds
-    increased = map (\(a,b) -> if (a < b) then 1 else 0) dds
+    increased = map (\(a,b) -> if a < b then 1 else 0) dds
     in sum increased
 
 day01_2_pure :: [Int] -> Int

@@ -17,7 +17,7 @@ colLength :: Matrix -> Int
 colLength = length
 
 (!) :: Matrix -> Point -> Int
-m ! (x, y) 
+m ! (x, y)
      | 0 <= y && y < colLength m && 0 <= x && x < rowLength m = m !! y !! x
      | otherwise = maxBound
 
@@ -25,17 +25,17 @@ neighbours :: Point -> [Point]
 neighbours (x, y) = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
 
 isLowPoint :: Matrix -> Point -> Bool
-isLowPoint m p = all (> (m ! p)) . map (m !) . neighbours $ p
+isLowPoint m p = all ((> (m ! p)) . (m !)) . neighbours $ p
 
 lowPoints :: Matrix -> [Point]
 lowPoints m = [(x,y) | x <- [0..rowLength m - 1], y <- [0..colLength m - 1], isLowPoint m (x, y)]
 
 riskLevel :: Matrix -> Point -> Int
-riskLevel m p = 1 + (m ! p)
+riskLevel m p = 1 + m ! p
 
 collectBasin :: Matrix -> [Point] -> Point -> [Point]
 collectBasin m s p
-     | (m ! p) < 9 && not (p `elem` s) = foldl (collectBasin m) (p:s) (neighbours p)
+     | m ! p < 9 && notElem p s = foldl (collectBasin m) (p:s) (neighbours p)
      | otherwise = s
 
 collectBasins :: Matrix -> [Point] -> [[Point]]

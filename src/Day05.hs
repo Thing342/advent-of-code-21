@@ -13,7 +13,7 @@ import Lib
 data Point = Point Int Int deriving (Show, Eq, Ord)
 
 initPoint :: String -> Point
-initPoint s = let 
+initPoint s = let
     (x,y) = read $ printf "(%s)" s
     in Point x y
 
@@ -26,19 +26,18 @@ initLine line = let
     in Line (initPoint p1) (initPoint p2)
 
 lineType :: Line -> LineType
-lineType (Line (Point x1 y1) (Point x2 y2)) = if (x1 == x2) 
-        then Vertical 
-    else if (y1 == y2) 
-        then Horizontal 
-    else Diagonal
+lineType (Line (Point x1 y1) (Point x2 y2))
+  | x1 == x2 = Vertical
+  | y1 == y2 = Horizontal
+  | otherwise = Diagonal
 
 interpolate :: Bool -> Line -> Maybe [Point]
 interpolate part2 line@(Line (Point x1 y1) (Point x2 y2)) = case lineType line of
     Horizontal -> Just [Point x y1 | x <- easyrange x1 x2]
     Vertical   -> Just [Point x1 y | y <- easyrange y1 y2]
-    Diagonal   -> case part2 of
-        False      -> Nothing
-        True       -> Just [Point x y | (x,y) <- (easyrange x1 x2) `zip` (easyrange y1 y2)]
+    Diagonal   -> if part2 
+        then Nothing 
+        else Just [Point x y | (x,y) <- easyrange x1 x2 `zip` easyrange y1 y2]
 
 data ProblemState = ProblemState {
     _lines :: [Line],
@@ -61,7 +60,7 @@ initProblem part2 ls = let
     in foldr readLine st (initLine <$> ls)
 
 solve :: ProblemState -> Int
-solve st = length $ (filter (>= 2)) $ Map.elems $ _overlaps st
+solve = length . filter (>= 2) . Map.elems . _overlaps
 
 solveIO :: Bool -> Bool -> IO Int
 solveIO p2 test = do
