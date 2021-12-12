@@ -38,6 +38,7 @@ library
       Day10
       Day11
       Lib
+      Matrix
   other-modules:
       Paths_adventofcode21
   hs-source-dirs:

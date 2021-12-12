@@ -18,10 +18,10 @@ puzzleInputDir :: String
 puzzleInputDir = "./in"
 
 puzzleInputFile :: Int -> Int -> String
-puzzleInputFile day part = printf "%s/day%02d.%d" puzzleInputDir day part
+puzzleInputFile = printf "%s/day%02d.%d" puzzleInputDir
 
 testInputFile :: Int -> Int -> String
-testInputFile day part = printf "%s/test%02d.%d" puzzleInputDir day part
+testInputFile = printf "%s/test%02d.%d" puzzleInputDir
 
 readInput :: Int -> Int -> IO [String]
 readInput day part = do
