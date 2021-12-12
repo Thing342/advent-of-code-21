@@ -1,6 +1,6 @@
 module Day11 (soln) where
 
-import Data.Char (digitToInt, GeneralCategory (Control))
+import Data.Char (digitToInt)
 
 import Control.Monad.State
 
@@ -11,27 +11,11 @@ import qualified Matrix as M
 import qualified Data.Vector as V
 import Data.Vector (Vector)
 
-import Data.Map (Map)
-import qualified Data.Map as Map
-import Debug.Trace (trace)
-import Data.List (intersperse)
-import qualified Control.Monad
-
-data Octopus = Octopus {
-    _pos :: Point,
-    _level :: Int
-} deriving (Show)
-
-data Day11State = Day11State {
-    _octopi :: Matrix Octopus,
-    _flashes :: Int
-} deriving (Show)
+type Octopus = Int
+type Day11State = Matrix Octopus
 
 showSt :: Day11State -> String
-showSt = unlines . V.toList . V.map show . M.map _level . _octopi
-
-inc :: Octopus -> Octopus
-inc o = Octopus { _level = _level o + 1 , _pos = _pos o}
+showSt = unlines . V.toList . V.map show
 
 neighbors :: Matrix a -> Point -> Vector Point
 neighbors m (r,c) = V.fromList $ do
@@ -43,69 +27,64 @@ neighbors m (r,c) = V.fromList $ do
     return dp
 
 readMat :: [String] -> Matrix Octopus
-readMat ss = V.fromList [ V.fromList [ Octopus (r,c) (digitToInt x) | (x,c) <- s `zip` [0..length s - 1]] | (s,r) <- ss `zip` [0..length ss - 1]]
+readMat ss = V.fromList [ V.fromList [ digitToInt x | (x,c) <- s `zip` [0..length s - 1]] | (s,r) <- ss `zip` [0..length ss - 1]]
 
 day11State :: [String] -> Day11State
-day11State ss = Day11State {
-    _octopi = readMat ss,
-    _flashes = 0
-}
+day11State = readMat
 
 getOcto :: Day11State -> Point -> Octopus
-getOcto st p = case _octopi st ! p of
+getOcto st p = case st ! p of
     Just o  -> o
     Nothing -> eprintf "octo st"
 
-setOctopus :: Octopus -> State Day11State ()
-setOctopus o = do
+setOctopus :: Point -> Octopus -> State Day11State ()
+setOctopus p o = do
     st <- get
-    let nos = M.update_ (_octopi st) (_pos o) o
-    put st { _octopi = nos }
+    let nos = M.update_ st p o
+    put nos
 
 incrementOctopus :: Point -> State Day11State ()
 incrementOctopus p = do
     st <- get
     let o = st `getOcto` p
-    let os = _octopi st
-    let l = _level o + 1
-    setOctopus o {_level = l}
+    let l = o + 1
+    setOctopus p l
 
     when (l == 10) $ 
-        mapM_ incrementOctopus . neighbors os $ p
+        mapM_ incrementOctopus . neighbors st $ p
 
 resetOctopus :: Point -> State Day11State Int
 resetOctopus p = do
     st <- get
     let o = st `getOcto` p
-    case _level o of
+    case o of
         l | l > 9 -> do 
-            setOctopus o {_level = 0}
+            setOctopus p 0
             return 1
         _ -> return 0
 
-gameStep :: State Day11State ()
+gameStep :: State Day11State Int
 gameStep = do
     st <- get
 
-    let idx = M.idx $ _octopi st
+    let idx = M.idx st
     mapM_ incrementOctopus idx
     flashs <- mapM resetOctopus idx
 
     st <- get
-    put st { _flashes = _flashes st + V.sum flashs }
-    return ()
+    return . V.sum $ flashs
 
 part1 :: Int -> [String] -> Int
 part1 n inpt = let
     actions = replicateM n gameStep
-    (_,out) = runState actions (day11State inpt)
-    in _flashes out
+    flashes = evalState actions (day11State inpt)
+    in sum flashes
 
 doPart2 :: Int -> State Day11State Int
 doPart2 n = do
-    gameStep
+    flashes <- gameStep
     st <- get
-    if M.all (\o -> _level o == 0) $ _octopi st
+    if flashes == M.size st
         then return n
         else doPart2 (n+1)
 

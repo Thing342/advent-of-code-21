@@ -75,3 +75,6 @@ all f = V.all (V.all f)
 
 map :: (a -> b) -> Matrix a -> Matrix b
 map f m = (f <$>) <$> m
+
+size :: Matrix a -> Int
+size m = Matrix.length m * Matrix.width m
