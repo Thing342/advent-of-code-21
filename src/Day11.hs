@@ -29,9 +29,6 @@ neighbors m (r,c) = V.fromList $ do
 readMat :: [String] -> Matrix Octopus
 readMat ss = V.fromList [ V.fromList [ digitToInt x | (x,c) <- s `zip` [0..length s - 1]] | (s,r) <- ss `zip` [0..length ss - 1]]
 
-day11State :: [String] -> Day11State
-day11State = readMat
-
 getOcto :: Day11State -> Point -> Octopus
 getOcto st p = case st ! p of
     Just o  -> o
@@ -56,12 +53,10 @@ incrementOctopus p = do
 resetOctopus :: Point -> State Day11State Int
 resetOctopus p = do
     st <- get
-    let o = st `getOcto` p
-    case o of
-        l | l > 9 -> do 
-            setOctopus p 0
-            return 1
-        _ -> return 0
+    if getOcto st p > 9 then do
+        setOctopus p 0
+        return 1
+    else return 0
 
 gameStep :: State Day11State Int
 gameStep = do
@@ -70,14 +65,13 @@ gameStep = do
     let idx = M.idx st
     mapM_ incrementOctopus idx
     flashs <- mapM resetOctopus idx
-
-    st <- get
+    
     return . V.sum $ flashs
 
 part1 :: Int -> [String] -> Int
 part1 n inpt = let
     actions = replicateM n gameStep
-    flashes = evalState actions (day11State inpt)
+    flashes = evalState actions (readMat inpt)
     in sum flashes
 
 doPart2 :: Int -> State Day11State Int
@@ -89,7 +83,7 @@ doPart2 n = do
         else doPart2 (n+1)
 
 part2 :: [String] -> Int
-part2 inpt = evalState (doPart2 1) (day11State inpt)
+part2 inpt = evalState (doPart2 1) (readMat inpt)
 
 soln :: Lib.Day
 soln = Lib.Day 11 (part1 100 <$> readInput 11 1) (part2 <$> readInput 11 1)

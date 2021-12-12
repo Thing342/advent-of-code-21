@@ -38,7 +38,7 @@ chunks n = windows n n
 
 windows :: Int -> Int -> [a] -> [[a]]
 windows _ _ [] = []
-windows step n items = (take n items) : (windows step n (drop step items))
+windows step n items = take n items : windows step n (drop step items)
 
 insertWithMany :: Ord k => (a -> a -> a) -> [(k, a)] -> Map k a -> Map k a
 insertWithMany _ [] mymap = mymap
@@ -69,6 +69,9 @@ count = let
 
 median :: (Ord a) => [a] -> Either (a,a) a
 median = BinaryTree.treeMedian . BinaryTree.fromList
+
+anyWithKey :: (k -> a -> Bool) -> Map k a -> Bool
+anyWithKey f m = Map.size (Map.filterWithKey f m) == 0
 
 eprintf = error . printf
 
