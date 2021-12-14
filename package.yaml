@@ -25,6 +25,7 @@ dependencies:
 - containers
 - mtl
 - sort
+- advent-of-code-ocr
 
 library:
   source-dirs: src

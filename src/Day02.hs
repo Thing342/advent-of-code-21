@@ -47,4 +47,4 @@ part2 = do
     return $ x * y
 
 soln :: Lib.Day
-soln = Lib.Day {_daynum = 2, _part1 = part1, _part2 = part2}
+soln = Lib.Day {_daynum = 2, _part1 = show <$> part1, _part2 = show <$> part2}

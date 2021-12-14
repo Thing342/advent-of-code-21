@@ -76,4 +76,4 @@ part2 = do
     return (oxy * co2)
 
 soln :: Lib.Day
-soln = Lib.Day {_daynum = 3, _part1 = part1, _part2 = part2}
+soln = Lib.Day {_daynum = 3, _part1 = show <$> part1, _part2 = show <$> part2}

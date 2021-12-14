@@ -86,4 +86,4 @@ part2 :: [String] -> Int
 part2 inpt = evalState (doPart2 1) (readMat inpt)
 
 soln :: Lib.Day
-soln = Lib.Day 11 (part1 100 <$> readInput 11 1) (part2 <$> readInput 11 1)
+soln = Lib.Day 11 (show . part1 100 <$> readInput 11 1) (show . part2 <$> readInput 11 1)

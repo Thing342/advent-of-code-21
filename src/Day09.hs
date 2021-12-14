@@ -49,4 +49,4 @@ solveIO :: Bool -> IO Int
 solveIO p2 = solve p2 . fromInput <$> readInput 9 1
 
 soln :: Lib.Day
-soln = Lib.Day 9 (solveIO False) (solveIO True)
+soln = Lib.Day 9 (show <$> solveIO False) (show <$> solveIO True)

@@ -76,4 +76,4 @@ solve n = do
     return $ fishTotal days fish'
 
 soln :: Lib.Day
-soln = Lib.Day 6 (solve 80) (solve 256)
+soln = Lib.Day 6 (show <$> solve 80) (show <$> solve 256)

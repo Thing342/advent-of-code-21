@@ -38,6 +38,7 @@ library
       Day10
       Day11
       Day12
+      Day13
       Lib
       Matrix
   other-modules:
@@ -45,7 +46,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      advent-of-code-ocr
+    , base >=4.7 && <5
     , containers
     , mtl
     , sort
@@ -60,7 +62,8 @@ executable adventofcode21-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      adventofcode21
+      advent-of-code-ocr
+    , adventofcode21
     , base >=4.7 && <5
     , containers
     , mtl
@@ -77,7 +80,8 @@ test-suite adventofcode21-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      adventofcode21
+      advent-of-code-ocr
+    , adventofcode21
     , base >=4.7 && <5
     , containers
     , mtl

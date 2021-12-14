@@ -61,4 +61,4 @@ solveIO False = sum . map score . filter isSyntaxError . map checkSyntax <$> rea
 solveIO True = _useRight . median . map score . filter isIncomplete . map checkSyntax <$> readInput 10 1
 
 soln :: Lib.Day
-soln = Lib.Day 10 (solveIO False) (solveIO True)
+soln = Lib.Day 10 (show <$> solveIO False) (show <$> solveIO True)

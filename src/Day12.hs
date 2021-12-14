@@ -44,4 +44,4 @@ solve p2 inpt =
    in execState action 0
 
 soln :: Lib.Day
-soln = Lib.Day 12 (solve False <$> readInput 12 1) (solve True <$> readInput 12 1)
+soln = Lib.Day 12 (show . solve False <$> readInput 12 1) (show . solve True <$> readInput 12 1)

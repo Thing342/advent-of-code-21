@@ -10,8 +10,8 @@ import qualified BinaryTree
 
 data Day = Day {
     _daynum :: Int,
-    _part1  :: IO Int,
-    _part2  :: IO Int
+    _part1  :: IO String,
+    _part2  :: IO String
 }
 
 puzzleInputDir :: String

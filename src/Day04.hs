@@ -100,4 +100,4 @@ part2 = do
     return $ winningNum * score
 
 soln :: Lib.Day
-soln = Lib.Day 4 part1 part2
+soln = Lib.Day 4 (show <$> part1) (show <$> part2)

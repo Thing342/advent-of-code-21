@@ -70,4 +70,4 @@ solveIO p2 test = do
     return $ solve st
 
 soln :: Lib.Day
-soln = Lib.Day 5 (solveIO False False) (solveIO True False)
+soln = Lib.Day 5 (show <$> solveIO False False) (show <$> solveIO True False)

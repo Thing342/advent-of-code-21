@@ -43,4 +43,4 @@ part2 = do
     return $ day01_2_pure ds
 
 soln :: Lib.Day
-soln = Lib.Day {_daynum = 1, _part1 = part1, _part2 = part2}
+soln = Lib.Day {_daynum = 1, _part1 = show <$> part1, _part2 = show <$> part2}

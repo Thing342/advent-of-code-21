@@ -53,7 +53,7 @@ decodeOutputNumbers :: String -> Int
 decodeOutputNumbers = readDigits . decodeOutputDigits
 
 solve :: Bool -> [String] -> Int
-solve False = length . filter (`elem` [1,4,7,8]) . concat . map decodeOutputDigits
+solve False = length . filter (`elem` [1,4,7,8]) . concatMap decodeOutputDigits
 solve True = sum . map decodeOutputNumbers
 
 solveIO :: Bool -> IO Int
@@ -62,4 +62,4 @@ solveIO p2 = do
     return $ solve p2 inpt
 
 soln :: Lib.Day
-soln = Lib.Day 8 (solveIO False) (solveIO True)
+soln = Lib.Day 8 (show <$> solveIO False) (show <$> solveIO True)

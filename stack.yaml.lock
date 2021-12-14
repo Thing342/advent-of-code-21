@@ -10,4 +10,11 @@ snapshots:
     sha256: 63539429076b7ebbab6daa7656cfb079393bf644971156dc349d7c0453694ac2
     url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/18.yaml
     size: 586296
-packages: []
+packages:
+- original:
+    hackage: advent-of-code-ocr-0.1.2.0@sha256:86d2d6ea54072283dfb11ee0d1cc69db36da17578d85bc23d5a6cf8f57328256,2927
+  completed:
+    pantry-tree:
+      sha256: 40abbd30800075fd8f38404b7950908f13f9425c071a96e2088ade46061a357c
+      size: 614
+    hackage: advent-of-code-ocr-0.1.2.0@sha256:86d2d6ea54072283dfb11ee0d1cc69db36da17578d85bc23d5a6cf8f57328256,2927

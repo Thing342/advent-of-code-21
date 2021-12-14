@@ -13,6 +13,7 @@ import qualified Day09
 import qualified Day10
 import qualified Day11
 import qualified Day12
+import qualified Day13
 
 import Text.Printf
 
@@ -21,8 +22,8 @@ runDay Day {_daynum = d, _part1 = p1, _part2 = p2 } = do
     ansOne <- p1
     ansTwo <- p2
     printf "=== DAY %02d ===\n" d
-    printf "PART 1: %d\n" ansOne
-    printf "PART 2: %d\n" ansTwo
+    printf "PART 1: %s\n" ansOne
+    printf "PART 2: %s\n" ansTwo
 
 
 main :: IO ()
@@ -39,3 +40,4 @@ main = do
     runDay Day10.soln
     runDay Day11.soln
     runDay Day12.soln
+    runDay Day13.soln

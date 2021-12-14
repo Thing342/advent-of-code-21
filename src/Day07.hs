@@ -22,4 +22,4 @@ solveIO p2 = do
     return . solve p2 $ head inpt
 
 soln :: Lib.Day
-soln = Lib.Day 7 (solveIO False) (solveIO True)
+soln = Lib.Day 7 (show <$> solveIO False) (show <$> solveIO True)
