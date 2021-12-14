@@ -10,14 +10,10 @@ type GraphMap k = Map k [k]
 type Path = Map String Int
 
 graphFromInput :: [String] -> GraphMap String
-graphFromInput inpt =
-  let go [] gm = gm
-      go (line : ls) gm = go ls gm''
-        where
-          gm'' = Map.insertWith (++) to [from] gm'
-          gm' = Map.insertWith (++) from [to] gm
-          (to : from : _) = splitBy '-' line
-   in go inpt Map.empty
+graphFromInput =
+  let go l gm = Map.insertWith (++) to [from] . Map.insertWith (++) from [to] $ gm
+        where (to : from : _) = splitBy '-' l
+   in foldr go Map.empty
 
 isSmall :: String -> Bool
 isSmall = isLower . head

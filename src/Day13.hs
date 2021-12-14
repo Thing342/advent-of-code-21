@@ -1,79 +1,70 @@
 module Day13 (soln) where
 
-
+import Advent.OCR (parseLetters)
+import Control.Monad.State (State, execState, get, gets, modify, put, when)
+import Data.Maybe (fromJust)
 import Data.Set (Set, member, notMember)
 import qualified Data.Set as Set
-import Control.Monad.State (State, get, gets, put, when, modify, execState)
-
-import Advent.OCR (parseLetters)
-
 import Lib
 
-type Point = (Int,Int)
-data DotMatrix = DotMatrix {
-  _m :: Set Point,
-  _xz :: Int,
-  _yz :: Int
-} deriving (Show)
+type Point = (Int, Int)
 
-type Fold = (String,Int)
+type DotMatrix = Set Point
+
+data FoldDir = FoldLeft | FoldUp deriving (Show, Eq)
+
+type Fold = (FoldDir, Int)
 
 type Action a = State DotMatrix a
 
 initPoints :: [String] -> Set Point
-initPoints = let
-  go s m = let (x : y : _) = read <$> splitBy ',' s
-    in Set.insert (x,y) m
-  in foldr go Set.empty
+initPoints =
+  let go s = Set.insert (x, y) where (x : y : _) = read <$> splitBy ',' s
+   in foldr go Set.empty
+
+initFoldDir :: Char -> FoldDir
+initFoldDir 'x' = FoldLeft
+initFoldDir 'y' = FoldUp
+initFoldDir c = eprintf "initFoldDir %c" c
 
 initFolds :: [String] -> [Fold]
-initFolds = map go where
-  go l = (head w, read $ w !! 1) where
-    term = words l !! 2
-    w = splitBy '=' term
-
-max2 :: (Bounded a, Ord a, Bounded b, Ord b) => [(a,b)] -> (a,b)
-max2 = foldr (\(xb,yb) (xm,ym) -> (max xb xm, max yb ym)) (minBound, minBound)
+initFolds = map go
+  where
+    go l = (d, v)
+      where
+        (ds : vs : _) = splitBy '=' (words l !! 2)
+        d = initFoldDir . head $ ds
+        v = read vs
 
 initFromInput :: [String] -> (DotMatrix, [Fold])
-initFromInput ss = let
-  b = splitBy "" ss
-  m = initPoints $ head b
-  (xz,yz) = max2 $ Set.toList m
-  in (DotMatrix {_xz = xz, _yz = yz, _m = m}, initFolds (b !! 1))
+initFromInput ss =
+  let (ps : fs : _) = splitBy "" ss
+   in (initPoints ps, initFolds fs)
 
 movePoint :: Point -> Point -> Action ()
-movePoint p1 p2 = modify $ \st -> st {_m = Set.insert p2 . Set.delete p1 $ _m st }
+movePoint p1 p2 = modify $ Set.insert p2 . Set.delete p1
 
-foldPointUp :: Int -> Point -> Action ()
-foldPointUp y p@(x1,y1) = when (y1 >= y) $ do
+foldPoint :: Fold -> Point -> Action ()
+foldPoint (FoldLeft, x) p@(x1, y1) = when (x1 >= x) $ do
+  let x2 = x - (x1 - x)
+  movePoint p (x2, y1)
+foldPoint (FoldUp, y) p@(x1, y1) = when (y1 >= y) $ do
   let y2 = y - (y1 - y)
   movePoint p (x1, y2)
 
-foldPointLeft :: Int -> Point -> Action ()
-foldPointLeft x p@(x1,y1) = when (x1 >= x) $ do
-  let x2 = x - (x1 - x)
-  movePoint p (x2, y1)
-
 fold :: Fold -> Action ()
-fold (d, v) = do
-  m <- gets _m
-  let (action, update) = if d == "x" then (foldPointLeft, \x st -> st {_xz = x}) else (foldPointUp, \y st -> st {_yz = y})
-  mapM_ (action v) m
-  modify $ update v
+fold f = get >>= mapM_ (foldPoint f)
 
 part1 :: [String] -> Int
-part1 inpt = let
-  (st, folds) = initFromInput inpt
-  actions = fold $ head folds
-  in length . _m . execState actions $ st
+part1 inpt =
+  let (st, fd : _) = initFromInput inpt
+   in length . execState (fold fd) $ st
 
 part2 :: [String] -> String
-part2 inpt = let
-  (st, folds) = initFromInput inpt
-  actions = mapM fold folds
-  (Just code) = parseLetters . _m . execState actions $ st
-  in code
+part2 inpt =
+  let (st, folds) = initFromInput inpt
+      actions = mapM fold folds
+   in fromJust . parseLetters . execState actions $ st
 
 soln :: Lib.Day
 soln = Lib.Day 13 (show . part1 <$> readInput 13 1) (part2 <$> readInput 13 1)
