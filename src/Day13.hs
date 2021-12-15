@@ -18,28 +18,25 @@ type Fold = (FoldDir, Int)
 type Action a = State DotMatrix a
 
 initPoints :: [String] -> Set Point
-initPoints =
-  let go s = Set.insert (x, y) where (x : y : _) = read <$> splitBy ',' s
-   in foldr go Set.empty
+initPoints = Set.fromList . map readCSV2
 
 initFoldDir :: Char -> FoldDir
 initFoldDir 'x' = FoldLeft
 initFoldDir 'y' = FoldUp
 initFoldDir c = eprintf "initFoldDir %c" c
 
-initFolds :: [String] -> [Fold]
-initFolds = map go
+initFold :: String -> Fold
+initFold l = (d, v)
   where
-    go l = (d, v)
-      where
-        (ds : vs : _) = splitBy '=' (words l !! 2)
-        d = initFoldDir . head $ ds
-        v = read vs
+    -- "fold along y=7"
+    (ds : vs : _) = splitBy '=' (words l !! 2)
+    d = initFoldDir . head $ ds
+    v = read vs
 
 initFromInput :: [String] -> (DotMatrix, [Fold])
 initFromInput ss =
   let (ps : fs : _) = splitBy "" ss
-   in (initPoints ps, initFolds fs)
+   in (initPoints ps, map initFold fs)
 
 movePoint :: Point -> Point -> Action ()
 movePoint p1 p2 = modify $ Set.insert p2 . Set.delete p1

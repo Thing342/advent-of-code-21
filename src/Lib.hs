@@ -39,8 +39,7 @@ windows _ _ [] = []
 windows step n items = take n items : windows step n (drop step items)
 
 insertWithMany :: Ord k => (a -> a -> a) -> [(k, a)] -> Map k a -> Map k a
-insertWithMany _ [] mymap = mymap
-insertWithMany f ((key, val) : ns) mymap = Map.insertWith f key val (insertWithMany f ns mymap)
+insertWithMany f kvs m = foldr (uncurry $ Map.insertWith f) m kvs
 
 splitBy :: (Eq a) => a -> [a] -> [[a]]
 splitBy delim [] = [[]]
@@ -61,9 +60,7 @@ maximize :: (Ord a, Bounded a) => [a] -> a
 maximize = foldr max minBound
 
 count :: (Traversable t, Ord k, Num v) => t k -> Map k v
-count =
-  let accum c m = Map.insertWith (+) c 1 m
-   in foldr accum Map.empty
+count = foldr (\c -> Map.insertWith (+) c 1) Map.empty
 
 median :: (Ord a) => [a] -> Either (a, a) a
 median = BinaryTree.treeMedian . BinaryTree.fromList
@@ -73,6 +70,18 @@ anyWithKey f m = Map.size (Map.filterWithKey f m) == 0
 
 max2 :: (Foldable t, Bounded a, Ord a, Bounded b, Ord b) => t (a, b) -> (a, b)
 max2 = foldr (\(xb, yb) (xm, ym) -> (max xb xm, max yb ym)) (minBound, minBound)
+
+readCSV :: (Read a) => String -> [a]
+readCSV s = read <$> splitBy ',' s
+
+readCSV2 :: (Read a) => String -> (a,a)
+readCSV2 s = let (x : y : _) = readCSV s in (x,y)
+
+enumerate :: [a] -> [(Int, a)]
+enumerate xs = [1..] `zip` xs
+
+minMaxOf :: (Foldable f, Bounded a, Ord a) => f a -> (a,a)
+minMaxOf = foldr (\a1 (mn, mx) -> (min mn a1, max mx a1)) (maxBound, minBound)
 
 eprintf = error . printf
 

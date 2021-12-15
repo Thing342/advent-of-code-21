@@ -11,7 +11,7 @@ type Path = Map String Int
 
 graphFromInput :: [String] -> GraphMap String
 graphFromInput =
-  let go l gm = Map.insertWith (++) to [from] . Map.insertWith (++) from [to] $ gm
+  let go l = Map.insertWith (++) to [from] . Map.insertWith (++) from [to]
         where (to : from : _) = splitBy '-' l
    in foldr go Map.empty
 
