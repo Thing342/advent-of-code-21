@@ -40,6 +40,7 @@ library
       Day12
       Day13
       Day14
+      Day15
       Lib
       Matrix
   other-modules:
@@ -48,6 +49,7 @@ library
       src
   build-depends:
       advent-of-code-ocr
+    , array
     , base >=4.7 && <5
     , containers
     , mtl
@@ -65,6 +67,7 @@ executable adventofcode21-exe
   build-depends:
       advent-of-code-ocr
     , adventofcode21
+    , array
     , base >=4.7 && <5
     , containers
     , mtl
@@ -83,6 +86,7 @@ test-suite adventofcode21-test
   build-depends:
       advent-of-code-ocr
     , adventofcode21
+    , array
     , base >=4.7 && <5
     , containers
     , mtl

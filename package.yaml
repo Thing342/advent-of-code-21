@@ -26,6 +26,7 @@ dependencies:
 - mtl
 - sort
 - advent-of-code-ocr
+- array
 
 library:
   source-dirs: src
