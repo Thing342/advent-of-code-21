@@ -83,6 +83,9 @@ enumerate xs = [1..] `zip` xs
 minMaxOf :: (Foldable f, Bounded a, Ord a) => f a -> (a,a)
 minMaxOf = foldr (\a1 (mn, mx) -> (min mn a1, max mx a1)) (maxBound, minBound)
 
+within :: (Ord a) => a -> (a,a) -> Bool
+a `within` (a1,a2) = a1 <= a && a <= a2  
+
 eprintf = error . printf
 
 debugval val = trace (show val) val
