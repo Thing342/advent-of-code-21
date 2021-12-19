@@ -1,7 +1,8 @@
 module Day17 where
 
-import Control.Monad.State
 import Lib
+import Parser
+import Control.Monad.State (guard)
 
 type TimeStep = Int
 
@@ -15,7 +16,7 @@ type Bounds = ((Int, Int), (Int, Int))
 
 parse :: String -> Bounds
 parse =
-  let st = do
+  let parser = do
         expect "target area: x="
         xmin <- grabNum
         expect ".."
@@ -25,7 +26,7 @@ parse =
         expect ".."
         ymax <- grabNum
         return ((xmin, xmax), (ymin, ymax))
-   in evalState st
+   in runParser parser
 
 inBounds :: Bounds -> Point -> Bool
 inBounds (xb, yb) (x, y) = y `within` yb && x `within` xb

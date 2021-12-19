@@ -4,8 +4,10 @@ import Control.Monad.State
 import Data.Char (isDigit)
 import Data.List (uncons)
 import Data.Maybe (fromMaybe)
-import Lib
 import Text.Printf (printf)
+
+import Lib
+import Parser
 
 data SnailfishNum = Pair SnailfishNum SnailfishNum | Literal Int deriving (Show, Eq)
 
@@ -15,12 +17,10 @@ fromLiteral _ = error "FromLiteral called on Pair!"
 
 -- PARSE --
 
-type SnailfishParseSt = [Char]
-
-literal :: State SnailfishParseSt SnailfishNum
+literal :: Parser SnailfishNum
 literal = Literal <$> grabNum
 
-pair :: State SnailfishParseSt SnailfishNum
+pair :: Parser SnailfishNum
 pair = do
   expect "["
   first <- parse
@@ -29,7 +29,7 @@ pair = do
   expect "]"
   return $ Pair first second
 
-parse :: State SnailfishParseSt SnailfishNum
+parse :: Parser SnailfishNum
 parse = do
   cs <- get
   case head cs of

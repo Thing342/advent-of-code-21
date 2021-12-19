@@ -44,8 +44,10 @@ library
       Day16
       Day17
       Day18
+      Day19
       Lib
       Matrix
+      Parser
   other-modules:
       Paths_adventofcode21
   hs-source-dirs:

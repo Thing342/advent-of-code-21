@@ -6,9 +6,6 @@ import qualified Data.Map as Map
 import Debug.Trace
 import Text.Printf
 import Data.Maybe (catMaybes, listToMaybe)
-import Control.Monad.State
-import Data.Char (isDigit, isNumber)
-import Text.Read.Lex (expect)
 
 data Day = Day
   { _daynum :: Int,
@@ -93,24 +90,7 @@ a `within` (a1,a2) = a1 <= a && a <= a2
 findMaybe :: [Maybe a] -> Maybe a
 findMaybe = listToMaybe . catMaybes
 
-grab :: Int -> State String String
-grab i = state $ splitAt i
 
-grabNum :: (Read a, Num a) => State String a
-grabNum = do
-  cs <- get
-  let nums = takeWhile (\c -> isDigit c || c == '-') cs
-  let cs' = drop (length nums) cs
-  when (null nums) $ error "Expected digits"
-  put cs'
-  return . read $ nums
-
-expect :: String -> State String ()
-expect xs = do
-  cs <- get
-  let (as,ps) = splitAt (length xs) cs
-  when (as /= xs) $ error $ printf "Expected \"%s\", got \"%s\"" xs as
-  put ps
 
 eprintf = error . printf
 
