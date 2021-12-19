@@ -1,4 +1,4 @@
-module Day15 where
+module Day15 (soln) where
 
 import Data.Array.Unboxed
 import Data.Set (Set)

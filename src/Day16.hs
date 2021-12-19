@@ -1,11 +1,9 @@
-module Day16 where
+module Day16 (soln) where
 
 import Control.Monad.State
 import Data.Bits
-import Data.Char (digitToInt)
-import Data.Vector (Vector)
-import qualified Data.Vector as V
-import Lib
+
+import Lib hiding (grab)
 
 data Packet = Packet
   { _version :: Int,
@@ -17,6 +15,8 @@ data Packet = Packet
 data PacketData = Literal Int | Operator Op [Packet] deriving (Show)
 
 data Op = Sum | Prod | Min | Max | Lit | GreaterThan | LessThan | EqualTo deriving (Show, Enum)
+
+-- Data Munging --
 
 readHex :: Char -> [Bool]
 readHex 'F' = [True, True, True, True]
@@ -43,19 +43,15 @@ fromInput = concatMap readHex
 bits2Int :: [Bool] -> Int
 bits2Int bs = foldr (\(bt, i) b -> if bt then setBit b i else b) 0 (reverse bs `zip` [0 ..])
 
+-- State Actions --
+
 type ParseSt = [Bool]
 
 grabBits :: Int -> State ParseSt [Bool]
-grabBits n = do
-  st <- get
-  let (bs, rs) = splitAt n st
-  put rs
-  return bs
+grabBits n = state $ splitAt n
 
 grab :: Int -> State ParseSt Int
-grab n = do
-  bs <- grabBits n
-  return $ bits2Int bs
+grab n = bits2Int <$> grabBits n
 
 literal :: State ParseSt [Bool]
 literal = do
@@ -76,7 +72,7 @@ operatorLength = do
 operatorCount :: State ParseSt [Packet]
 operatorCount = do
   num <- grab 11
-  mapM (const parse) [1 .. num]
+  replicateM num parse
 
 parse :: State ParseSt Packet
 parse = do
@@ -88,6 +84,8 @@ parse = do
       ltid <- grab 1
       Operator op <$> (if ltid == 1 then operatorCount else operatorLength)
   return $ Packet version packType packData
+
+-- Evaluation --
 
 readPacks :: [Bool] -> [Packet]
 readPacks bs =
