@@ -20,6 +20,7 @@ import qualified Day16
 import qualified Day17
 import qualified Day18
 import qualified Day19
+import qualified Day20
 import Lib
 import Text.Printf
 
@@ -53,5 +54,6 @@ main = do
       Day16.soln,
       Day17.soln,
       Day18.soln,
-      Day19.soln
+      Day19.soln,
+      Day20.soln
     ]

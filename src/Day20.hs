@@ -123,7 +123,7 @@ sampleImage img (r, c) =
 applyAlgImg :: ImageAlg -> Image -> Image
 applyAlgImg alg img = Image (array newBounds mapped) newInf
   where
-    db = 3
+    db = 1
     ((rl, cl), (rh, ch)) = boundsImg img
     newBounds = ((rl - db, cl - db), (rh + db, ch + db))
     mapping p = applyAlgPx alg (sampleImage img p)
@@ -143,8 +143,11 @@ readProb :: [String] -> Prob
 readProb (algs : _ : imgss) = Prob (readAlg algs) (readImage imgss)
 readProb _ = error "Bad input"
 
-part1 :: Prob -> Int
-part1 (Prob alg img0) = numLit (imgs !! 2)
+solve :: Int -> Prob -> Int
+solve n (Prob alg img0) = numLit (imgs !! n)
   where
     numLit img = sum [if asBoolPx px then 1 else 0 | px <- pixelsImg img]
     imgs = iterate (applyAlgImg alg) img0
+
+soln :: Lib.Day
+soln = do Lib.Day 20 (show . solve 2 . readProb <$> readInput 20 1) (show . solve 50 . readProb <$> readInput 20 1)
