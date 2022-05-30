@@ -22,6 +22,7 @@ import qualified Day18
 import qualified Day19
 import qualified Day20
 import Lib
+import System.Environment (getArgs)
 import Text.Printf
 
 runDay :: Day -> IO ()
@@ -32,28 +33,37 @@ runDay Day {_daynum = d, _part1 = p1, _part2 = p2} = do
   printf "PART 1: %s\n" ansOne
   printf "PART 2: %s\n" ansTwo
 
+days :: [Day]
+days =
+  [ Day01.soln,
+    Day02.soln,
+    Day03.soln,
+    Day04.soln,
+    Day05.soln,
+    Day06.soln,
+    Day07.soln,
+    Day08.soln,
+    Day09.soln,
+    Day10.soln,
+    Day11.soln,
+    Day12.soln,
+    Day13.soln,
+    Day14.soln,
+    Day15.soln,
+    Day16.soln,
+    Day17.soln,
+    Day18.soln,
+    Day19.soln,
+    Day20.soln
+  ]
+
 main :: IO ()
 main = do
-  mapM_
-    runDay
-    [ Day01.soln,
-      Day02.soln,
-      Day03.soln,
-      Day04.soln,
-      Day05.soln,
-      Day06.soln,
-      Day07.soln,
-      Day08.soln,
-      Day09.soln,
-      Day10.soln,
-      Day11.soln,
-      Day12.soln,
-      Day13.soln,
-      Day14.soln,
-      Day15.soln,
-      Day16.soln,
-      Day17.soln,
-      Day18.soln,
-      Day19.soln,
-      Day20.soln
-    ]
+  argv <- getArgs
+  run argv
+
+run :: [String] -> IO ()
+run (arg1 : _) = runDay (days !! day)
+  where
+    day = read arg1 - 1
+run _ = mapM_ runDay days
