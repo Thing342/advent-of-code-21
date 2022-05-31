@@ -90,6 +90,11 @@ a `within` (a1,a2) = a1 <= a && a <= a2
 findMaybe :: [Maybe a] -> Maybe a
 findMaybe = listToMaybe . catMaybes
 
+findMaybe' :: [Maybe a] -> Maybe a
+findMaybe' (m:ms) = case m of
+  Just _ -> m
+  Nothing -> findMaybe' ms
+findMaybe' [] = Nothing
 
 
 eprintf = error . printf
